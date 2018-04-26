@@ -1,0 +1,69 @@
+# Template to produce a new memcached deployment in OpenShift.
+#
+# To create an environment from the template, process and apply it:
+#   oc process -f memcached-template.yaml | oc apply -f -
+---
+apiVersion: v1
+kind: Template
+metadata:
+  name: memcached-template
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: memcached
+    name: rhel7
+    generation: 2
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+      - from:
+          kind: DockerImage
+          name: 'registry.access.redhat.com/rhel7:latest'
+        name: 'latest'
+        generation: 2
+        referencePolicy:
+          type: Source
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: memcached
+    name: memcached
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: memcached
+    name: memcached
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: 'memcached:latest'
+    runPolicy: Serial
+    source:
+      git:
+        uri: 'https://gitlab.cee.redhat.com/rad/memcached-container.git'
+      secrets:
+        - secret:
+            name: gitlab-auth
+      sourceSecret:
+        name: gitlab-auth
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: "rhel7:latest"
+      type: Docker
+- apiVersion: v1
+  kind: Secret
+  type: kubernetes.io/ssh-auth
+  data:
+    .gitconfig: W2h0dHBdCiAgICAgICAgc3NsVmVyaWZ5PWZhbHNl
+    ssh-privatekey: bm9uZQo=
+  metadata:
+    name: gitlab-auth
