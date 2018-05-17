@@ -13,25 +13,16 @@ objects:
   metadata:
     labels:
       app: memcached
-    name: rhel7
-    generation: 2
-  spec:
-    lookupPolicy:
-      local: false
-    tags:
-      - from:
-          kind: DockerImage
-          name: 'registry.access.redhat.com/rhel7:latest'
-        name: 'latest'
-        generation: 2
-        referencePolicy:
-          type: Source
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      app: memcached
     name: memcached
+  spec:
+    tags:
+      - annotations: null
+        from:
+          kind: DockerImage
+          name: 'quay.io/sochotni/rad-memcached:latest'
+        importPolicy:
+          scheduled: true
+        name: latest
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -40,9 +31,11 @@ objects:
     name: memcached
   spec:
     output:
+      pushSecret:
+        name: sochotni-upshift-uploader-pull-secret
       to:
-        kind: ImageStreamTag
-        name: 'memcached:latest'
+        kind: DockerImage
+        name: quay.io/sochotni/rad-memcached
     runPolicy: Serial
     source:
       git:
@@ -56,8 +49,8 @@ objects:
     strategy:
       dockerStrategy:
         from:
-          kind: ImageStreamTag
-          name: "rhel7:latest"
+          kind: DockerImage
+          name: "registry.access.redhat.com/rhel7:latest"
       type: Docker
 - apiVersion: v1
   kind: Secret
