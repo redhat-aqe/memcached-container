@@ -1,13 +1,21 @@
 FROM registry.access.redhat.com/rhel7:latest
 
+ARG PORT_ARG=11211
+
+ENV PORT=${PORT_ARG}
+ENV MEMORY_LIMIT=512
+ENV MAX_CON=1024
+ENV EXTRA_ARGS=''
+
+
 LABEL summary="Memcached container based on latest RHEL 7 base container" \
       description="Memcached container based on latest RHEL 7 base container" \
       io.k8s.description="Memcached container based on latest RHEL 7 base container" \
       io.k8s.display-name="RHEL 7 memcached" \
-      io.openshift.expose-services="11211:memcached" \
+      io.openshift.expose-services="$PORT:memcached" \
       io.openshift.tags="rhel7,memcached"
 
-EXPOSE 11211
+EXPOSE ${PORT_ARG}
 
 # Create user for memcached that has known UID
 # We need to do this before installing the RPMs which would create user with random UID
@@ -23,5 +31,4 @@ RUN INSTALL_PKGS='memcached' && \
 
 USER memcached
 
-ENTRYPOINT ["memcached"]
-CMD ["-m", "512", "-vv"]
+ENTRYPOINT memcached -p $PORT -m $MEMORY_LIMIT -c $MAX_CON $EXTRA_ARGS
