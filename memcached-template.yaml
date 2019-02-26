@@ -35,7 +35,7 @@ objects:
       - annotations: null
         from:
           kind: DockerImage
-          name: 'quay.io/sochotni/rad-memcached:latest'
+          name: 'quay.io/redhat-aqe/memcached:latest'
         importPolicy:
           scheduled: true
         name: latest
@@ -48,10 +48,10 @@ objects:
   spec:
     output:
       pushSecret:
-        name: sochotni-upshift-uploader-pull-secret
+        name: redhat-aqe-memcached-bot-pull-secret
       to:
         kind: DockerImage
-        name: quay.io/sochotni/rad-memcached
+        name: quay.io/redhat-aqe/memcached
     runPolicy: Serial
     source:
       git:
