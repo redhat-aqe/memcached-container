@@ -1,5 +1,7 @@
 # Memcached container
 
+[![Docker Repository on Quay](https://quay.io/repository/redhat-aqe/memcached/status "Docker Repository on Quay")](https://quay.io/repository/redhat-aqe/memcached)
+
 This repo contains all resources for Memcached container running in OpenShift.
 The image is automatically rebuild in [Quay.io](https://quay.io/repository/redhat-aqe/memcached) based on SCM event.
 Also it gets automatically rebuilt when new RHEL 7 base image gets released.
