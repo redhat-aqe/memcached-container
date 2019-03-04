@@ -24,6 +24,7 @@ objects:
         importPolicy:
           scheduled: true
         name: latest
+
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -39,6 +40,7 @@ objects:
         importPolicy:
           scheduled: true
         name: latest
+
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -55,12 +57,7 @@ objects:
     runPolicy: Serial
     source:
       git:
-        uri: 'https://gitlab.cee.redhat.com/rad/memcached-container.git'
-      secrets:
-        - secret:
-            name: gitlab-auth
-      sourceSecret:
-        name: gitlab-auth
+        uri: 'https://github.com/redhat-aqe/memcached-container.git'
       type: Git
     strategy:
       dockerStrategy:
@@ -72,17 +69,4 @@ objects:
       - type: imageChange
         imageChange: {}
       - type: ConfigChange
-      - type: GitLab
-        gitlab:
-          secretReference:
-            name: "c36566a66167a153"
 
-
-- apiVersion: v1
-  kind: Secret
-  type: kubernetes.io/ssh-auth
-  data:
-    .gitconfig: W2h0dHBdCiAgICAgICAgc3NsVmVyaWZ5PWZhbHNl
-    ssh-privatekey: bm9uZQo=
-  metadata:
-    name: gitlab-auth
