@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/rhel7:latest
+FROM fedora:latest
 
 ENV PORT=11211
 ENV MEMORY_LIMIT=512
@@ -6,12 +6,12 @@ ENV MAX_CON=1024
 ENV EXTRA_ARGS=''
 
 
-LABEL summary="Memcached container based on latest RHEL 7 base container" \
-      description="Memcached container based on latest RHEL 7 base container" \
-      io.k8s.description="Memcached container based on latest RHEL 7 base container" \
-      io.k8s.display-name="RHEL 7 memcached" \
+LABEL summary="Memcached container based on latest Fedora base container" \
+      description="Memcached container based on latest Fedora base container" \
+      io.k8s.description="Memcached container based on latest Fedora base container" \
+      io.k8s.display-name="Fedora memcached" \
       io.openshift.expose-services="$PORT:memcached" \
-      io.openshift.tags="rhel7,memcached"
+      io.openshift.tags="fedora,memcached"
 
 EXPOSE $PORT
 
@@ -22,9 +22,9 @@ RUN getent group  memcached &> /dev/null || groupadd -r memcached &> /dev/null &
            -c 'Memcached daemon' memcached &> /dev/null
 
 RUN INSTALL_PKGS='memcached' && \
-    yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    dnf install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    yum clean all -y && \
+    dnf clean all -y && \
     ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 USER memcached
